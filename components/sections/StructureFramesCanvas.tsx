@@ -4,12 +4,14 @@ import { useCallback, useEffect, useRef } from "react";
 import { useMotionValueEvent, type MotionValue } from "framer-motion";
 
 const FRAME_COUNT = 109;
-const PRELOAD_RADIUS = 8;
-const MAX_PARALLEL_LOADS = 4;
+const PRELOAD_RADIUS = 20;
+const MAX_PARALLEL_LOADS = 8;
 
 type StructureFramesCanvasProps = { progress: MotionValue<number> };
 
-export function StructureFramesCanvas({ progress }: StructureFramesCanvasProps) {
+export function StructureFramesCanvas({
+  progress,
+}: StructureFramesCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const targetRef = useRef(0);
   const currentRef = useRef(0);
@@ -51,7 +53,10 @@ export function StructureFramesCanvas({ progress }: StructureFramesCanvasProps) 
 
     const paintContain = (image: HTMLImageElement, opacity: number) => {
       // Keep the frame's full composition visible, as with SVG preserveAspectRatio="meet".
-      const scale = Math.min(width / image.naturalWidth, height / image.naturalHeight);
+      const scale = Math.min(
+        width / image.naturalWidth,
+        height / image.naturalHeight,
+      );
       const drawWidth = image.naturalWidth * scale;
       const drawHeight = image.naturalHeight * scale;
       context.globalAlpha = opacity;
@@ -79,59 +84,68 @@ export function StructureFramesCanvas({ progress }: StructureFramesCanvasProps) 
     });
   }, [drawFrame]);
 
-  const preloadAround = useCallback((center: number) => {
-    const decoded = decodedRef.current;
-    const loading = loadingRef.current;
-    const queue = queueRef.current;
-    const desired = new Set<number>();
+  const preloadAround = useCallback(
+    (center: number) => {
+      const decoded = decodedRef.current;
+      const loading = loadingRef.current;
+      const queue = queueRef.current;
+      const desired = new Set<number>();
 
-    for (let offset = 0; offset <= PRELOAD_RADIUS; offset += 1) {
-      const candidates = offset === 0 ? [center] : [center + offset, center - offset];
-      for (const frame of candidates) {
-        if (frame < 0 || frame >= FRAME_COUNT) continue;
-        desired.add(frame);
-        if (!decoded.has(frame) && !loading.has(frame)) queue.add(frame);
+      for (let offset = 0; offset <= PRELOAD_RADIUS; offset += 1) {
+        const candidates =
+          offset === 0 ? [center] : [center + offset, center - offset];
+        for (const frame of candidates) {
+          if (frame < 0 || frame >= FRAME_COUNT) continue;
+          desired.add(frame);
+          if (!decoded.has(frame) && !loading.has(frame)) queue.add(frame);
+        }
       }
-    }
 
-    for (const frame of [...queue]) if (!desired.has(frame)) queue.delete(frame);
-    for (const frame of [...decoded.keys()]) {
-      if (Math.abs(frame - center) > PRELOAD_RADIUS + 1) decoded.delete(frame);
-    }
-
-    const loadNext = () => {
-      if (!mountedRef.current) return;
-      while (loading.size < MAX_PARALLEL_LOADS && queue.size > 0) {
-        const frame = [...queue].sort((a, b) => Math.abs(a - center) - Math.abs(b - center))[0];
-        queue.delete(frame);
-        loading.add(frame);
-
-        const image = new Image();
-        image.decoding = "async";
-        image.onload = () => {
-          loading.delete(frame);
-          if (!mountedRef.current) return;
-          decoded.set(frame, image);
-          requestDraw();
-          loadNext();
-        };
-        image.onerror = () => {
-          loading.delete(frame);
-          loadNext();
-        };
-        image.src = `/frames/estrutura/frames/frame_${String(frame + 1).padStart(5, "0")}.webp`;
+      for (const frame of [...queue])
+        if (!desired.has(frame)) queue.delete(frame);
+      for (const frame of [...decoded.keys()]) {
+        if (Math.abs(frame - center) > PRELOAD_RADIUS + 1)
+          decoded.delete(frame);
       }
-    };
-    loadNext();
-  }, [requestDraw]);
+
+      const loadNext = () => {
+        if (!mountedRef.current) return;
+        while (loading.size < MAX_PARALLEL_LOADS && queue.size > 0) {
+          const frame = [...queue].sort(
+            (a, b) => Math.abs(a - center) - Math.abs(b - center),
+          )[0];
+          queue.delete(frame);
+          loading.add(frame);
+
+          const image = new Image();
+          image.decoding = "async";
+          image.onload = () => {
+            loading.delete(frame);
+            if (!mountedRef.current) return;
+            decoded.set(frame, image);
+            requestDraw();
+            loadNext();
+          };
+          image.onerror = () => {
+            loading.delete(frame);
+            loadNext();
+          };
+          image.src = `/frames/estrutura/frames/frame_${String(frame + 1).padStart(5, "0")}.webp`;
+        }
+      };
+      loadNext();
+    },
+    [requestDraw],
+  );
 
   useEffect(() => {
     mountedRef.current = true;
     preloadAround(0);
     const canvas = canvasRef.current;
-    const resizeObserver = canvas && typeof ResizeObserver !== "undefined"
-      ? new ResizeObserver(requestDraw)
-      : null;
+    const resizeObserver =
+      canvas && typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(requestDraw)
+        : null;
     if (canvas) resizeObserver?.observe(canvas);
 
     return () => {

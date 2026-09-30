@@ -4,8 +4,8 @@ import { useCallback, useEffect, useRef } from "react";
 import { useMotionValueEvent, type MotionValue } from "framer-motion";
 
 const FRAME_COUNT = 241;
-const CACHE_RADIUS = 8;
-const MAX_PARALLEL = 4;
+const CACHE_RADIUS = 20;
+const MAX_PARALLEL = 8;
 
 type DJHeroCanvasProps = { progress: MotionValue<number> };
 
@@ -47,11 +47,20 @@ export function DJHeroCanvas({ progress }: DJHeroCanvasProps) {
     if (!image) return;
 
     const paint = (frame: HTMLImageElement, alpha: number) => {
-      const scale = Math.max(width / frame.naturalWidth, height / frame.naturalHeight);
+      const scale = Math.max(
+        width / frame.naturalWidth,
+        height / frame.naturalHeight,
+      );
       const drawWidth = frame.naturalWidth * scale;
       const drawHeight = frame.naturalHeight * scale;
       context.globalAlpha = alpha;
-      context.drawImage(frame, (width - drawWidth) / 2, (height - drawHeight) / 2, drawWidth, drawHeight);
+      context.drawImage(
+        frame,
+        (width - drawWidth) / 2,
+        (height - drawHeight) / 2,
+        drawWidth,
+        drawHeight,
+      );
     };
 
     context.imageSmoothingEnabled = true;
@@ -69,59 +78,64 @@ export function DJHeroCanvas({ progress }: DJHeroCanvasProps) {
     });
   }, [draw]);
 
-  const scheduleAround = useCallback((center: number) => {
-    const images = imagesRef.current;
-    const pending = pendingRef.current;
-    const queued = queuedRef.current;
-    const wanted = new Set<number>();
+  const scheduleAround = useCallback(
+    (center: number) => {
+      const images = imagesRef.current;
+      const pending = pendingRef.current;
+      const queued = queuedRef.current;
+      const wanted = new Set<number>();
 
-    for (let distance = 0; distance <= CACHE_RADIUS; distance += 1) {
-      const candidates = distance === 0 ? [center] : [center + distance, center - distance];
-      for (const frame of candidates) {
-        if (frame >= 0 && frame < FRAME_COUNT) {
-          wanted.add(frame);
-          if (!images.has(frame) && !pending.has(frame)) queued.add(frame);
+      for (let distance = 0; distance <= CACHE_RADIUS; distance += 1) {
+        const candidates =
+          distance === 0 ? [center] : [center + distance, center - distance];
+        for (const frame of candidates) {
+          if (frame >= 0 && frame < FRAME_COUNT) {
+            wanted.add(frame);
+            if (!images.has(frame) && !pending.has(frame)) queued.add(frame);
+          }
         }
       }
-    }
 
-    for (const frame of [...queued]) if (!wanted.has(frame)) queued.delete(frame);
-    for (const frame of [...images.keys()]) {
-      if (Math.abs(frame - center) > CACHE_RADIUS + 1) images.delete(frame);
-    }
+      for (const frame of [...queued])
+        if (!wanted.has(frame)) queued.delete(frame);
 
-    const pump = () => {
-      if (!aliveRef.current) return;
-      while (pending.size < MAX_PARALLEL && queued.size > 0) {
-        const next = [...queued].sort((a, b) => Math.abs(a - center) - Math.abs(b - center))[0];
-        queued.delete(next);
-        pending.add(next);
-        const image = new Image();
-        image.decoding = "async";
-        image.onload = () => {
-          pending.delete(next);
-          if (!aliveRef.current) return;
-          images.set(next, image);
-          requestFrame();
-          pump();
-        };
-        image.onerror = () => {
-          pending.delete(next);
-          pump();
-        };
-        image.src = `/frames/dj/frame_${String(next + 1).padStart(5, "0")}.webp`;
-      }
-    };
-    pump();
-  }, [requestFrame]);
+      const pump = () => {
+        if (!aliveRef.current) return;
+        while (pending.size < MAX_PARALLEL && queued.size > 0) {
+          const next = [...queued].sort(
+            (a, b) => Math.abs(a - center) - Math.abs(b - center),
+          )[0];
+          queued.delete(next);
+          pending.add(next);
+          const image = new Image();
+          image.decoding = "async";
+          image.onload = () => {
+            pending.delete(next);
+            if (!aliveRef.current) return;
+            images.set(next, image);
+            requestFrame();
+            pump();
+          };
+          image.onerror = () => {
+            pending.delete(next);
+            pump();
+          };
+          image.src = `/frames/dj/frame_${String(next + 1).padStart(5, "0")}.webp`;
+        }
+      };
+      pump();
+    },
+    [requestFrame],
+  );
 
   useEffect(() => {
     aliveRef.current = true;
     scheduleAround(0);
     const canvas = canvasRef.current;
-    const observer = canvas && typeof ResizeObserver !== "undefined"
-      ? new ResizeObserver(requestFrame)
-      : null;
+    const observer =
+      canvas && typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(requestFrame)
+        : null;
     if (canvas) observer?.observe(canvas);
     return () => {
       aliveRef.current = false;
@@ -152,5 +166,11 @@ export function DJHeroCanvas({ progress }: DJHeroCanvasProps) {
     rafRef.current = window.requestAnimationFrame(animate);
   });
 
-  return <canvas ref={canvasRef} aria-label="Animação de um DJ controlada pelo scroll" className="absolute inset-0 h-full w-full" />;
+  return (
+    <canvas
+      ref={canvasRef}
+      aria-label="Animação de um DJ controlada pelo scroll"
+      className="absolute inset-0 h-full w-full"
+    />
+  );
 }
