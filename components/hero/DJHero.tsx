@@ -51,11 +51,15 @@ export function DJHero() {
               <span className="text-[#72e5ef]">•</span> ILUMINAÇÃO{" "}
               <span className="text-[#72e5ef]">•</span> LOCAÇÃO
             </p>
-            <h1 className="origin-top-left scale-[1.1] font-display text-[clamp(3rem,6vw,5.2rem)] font-semibold uppercase leading-[.9] tracking-[-.075em] text-white [text-shadow:0_2px_35px_rgba(0,0,0,.45)]">
-              DJ <span className="text-[#72e5ef]">[NOME]</span>
+            <h1 className="font-zen-dots text-[42px] font-normal uppercase leading-[0.95] tracking-[-0.04em] text-white sm:text-[60px] lg:text-[100px]">
+              DJ{" "}
+              <span className="glitch text-[#72e5ef]" data-glitch="WARLEY">
+                WARLEY
+              </span>
             </h1>
             <p className="mt-4 max-w-[320px] origin-top-left scale-[1.1] text-[13px] leading-[1.55] text-white/80 sm:mt-5 sm:text-base sm:leading-7">
-              Som, energia e experiência para o seu evento.
+              DJ para eventos com som profissional, iluminação e locação de
+              equipamentos.
             </p>
             <a
               href="mailto:contato@sompro.com.br?subject=Solicita%C3%A7%C3%A3o%20de%20or%C3%A7amento"

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 
 const links = [
   { label: "Início", href: "#inicio" },
@@ -81,7 +82,7 @@ export function DJNavbar() {
           aria-label="DJ [NOME] — início"
           className="group mr-auto inline-flex scale-[1.12] origin-left items-baseline whitespace-nowrap text-[18px] font-semibold tracking-[-.06em] text-white transition-colors duration-500 ease-[cubic-bezier(.22,1,.36,1)] hover:text-white sm:text-[21px] lg:mr-0"
         >
-          DJ <span className="ml-1 text-[#72e5ef]">[NOME]</span>
+          <Image src="/logo.png" alt="DJ WARLEY" width={100} height={100} />
         </a>
 
         <nav
