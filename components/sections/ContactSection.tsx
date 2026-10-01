@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import Image from "next/image";
 
 const contactItems = [
   {
@@ -129,9 +130,9 @@ export function ContactSection() {
 
         <div className="pointer-events-none absolute inset-0 z-10 opacity-[0.17] [background-image:linear-gradient(rgba(19,202,226,.2)_1px,transparent_1px),linear-gradient(90deg,rgba(19,202,226,.2)_1px,transparent_1px)] [background-size:112px_112px] [mask-image:linear-gradient(90deg,black,transparent_76%)]" />
 
-        <div className="relative z-20 mx-auto flex min-h-[100svh] w-full max-w-[1920px] flex-col justify-center px-5 pb-12 pt-28 sm:px-9 lg:min-h-0 lg:h-full lg:px-[5.5vw] lg:pb-10 lg:pt-24">
+        <div className="bg-[#02090e]/70 relative z-20 mx-auto flex min-h-[100svh] w-full max-w-[1920px] flex-col justify-center px-5 pb-12 pt-28 sm:px-9 lg:min-h-0 lg:h-full lg:px-[5.5vw] lg:pb-10 lg:pt-24 ">
           <motion.div
-            className="w-full max-w-[760px] lg:w-[47%]"
+            className="w-full max-w-[760px] lg:w-[47%] "
             initial={reduceMotion ? false : "hidden"}
             whileInView="visible"
             viewport={{ once: true, amount: 0.25 }}
@@ -243,13 +244,14 @@ export function ContactSection() {
       >
         <div className="mx-auto grid min-h-[128px] w-full max-w-[1920px] grid-cols-1 items-center gap-6 px-5 py-7 sm:px-9 lg:grid-cols-[1.35fr_1.2fr_1.1fr_1.1fr] lg:gap-6 lg:px-[5.5vw] lg:py-0">
           <div className="flex items-center gap-4">
-            <span className="font-display text-[42px] font-semibold leading-none tracking-[-0.09em] text-white">
-              DJ
-            </span>
+            <Image src="/pin.png" alt="DJ WARLEY" width={100} height={100} />
             <span className="h-10 w-px bg-cyan-300/30" />
             <span>
-              <span className="block text-[11px] font-semibold uppercase tracking-[0.34em] text-white">
-                DJ [NOME]
+              <span className="font-zen-dots block text-[11px] font-semibold uppercase tracking-[0.34em] text-white">
+                DJ{" "}
+                <span className="glitch text-[#72e5ef]" data-glitch="WARLEY">
+                  WARLEY
+                </span>
               </span>
               <span className="mt-2 block text-[8px] font-medium uppercase tracking-[0.25em] text-white/60 sm:text-[9px]">
                 DJ • SOM • ILUMINAÇÃO • LOCAÇÃO
