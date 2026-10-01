@@ -46,7 +46,7 @@ export function HeroSocialRail() {
   return (
     <aside
       aria-label="Redes sociais"
-      className="absolute left-5 top-1/2 z-10 hidden -translate-y-1/2 flex-col items-center gap-4 sm:flex lg:left-10 scale-150"
+      className="absolute left-2 top-1/2 z-10 flex -translate-y-1/2 flex-col items-center gap-1 sm:left-5 sm:gap-4 lg:left-10 scale-[.78] sm:scale-150"
     >
       <span className="h-8 w-px bg-gradient-to-b from-transparent via-white/30 to-white/5" />
       {socials.map((social) => (

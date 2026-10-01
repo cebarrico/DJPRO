@@ -47,17 +47,20 @@ export function DJHeroCanvas({ progress }: DJHeroCanvasProps) {
     if (!image) return;
 
     const paint = (frame: HTMLImageElement, alpha: number) => {
-      const scale = Math.max(
+      const isMobile = window.matchMedia("(max-width: 767px)").matches;
+      const coverScale = Math.max(
         width / frame.naturalWidth,
         height / frame.naturalHeight,
       );
+      const scale = isMobile ? coverScale * 1.15 : coverScale;
       const drawWidth = frame.naturalWidth * scale;
       const drawHeight = frame.naturalHeight * scale;
+      const verticalOffset = isMobile ? -height * 0.02 : 0;
       context.globalAlpha = alpha;
       context.drawImage(
         frame,
         (width - drawWidth) / 2,
-        (height - drawHeight) / 2,
+        (height - drawHeight) / 2 + verticalOffset,
         drawWidth,
         drawHeight,
       );

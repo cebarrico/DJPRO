@@ -29,8 +29,12 @@ export function DJHero() {
 
         <div
           id="inicio"
-          className="absolute inset-x-0 top-[23%] mx-auto max-w-[1760px] scroll-mt-8 px-5 sm:top-[24%] sm:px-16 lg:px-[11vw]"
+          className="absolute inset-x-0 top-[23%] mx-auto max-w-[1760px] scroll-mt-8 px-14 max-md:top-[25%] sm:top-[24%] sm:px-16 lg:px-[11vw]"
         >
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -inset-x-14 -inset-y-8 z-0 bg-[radial-gradient(ellipse_at_28%_45%,rgba(3,6,10,.68)_0%,rgba(3,6,10,.38)_42%,rgba(3,6,10,0)_76%)] sm:hidden"
+          />
           <motion.div
             initial={reduceMotion ? false : { opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
@@ -39,7 +43,7 @@ export function DJHero() {
               delay: 0.15,
               ease: [0.22, 1, 0.36, 1],
             }}
-            className="max-w-[475px]"
+            className="max-w-[475px] max-md:relative max-md:z-10"
           >
             <p className="mb-4 flex scale-[1.12] origin-top-left items-center gap-2 text-[8px] font-medium uppercase tracking-[.25em] text-white/65 sm:mb-5 sm:gap-3 sm:text-[10px] sm:tracking-[.3em]">
               <span className="h-px w-5 shrink-0 bg-[#72e5ef]/80 sm:w-7" /> DJ{" "}
@@ -55,7 +59,7 @@ export function DJHero() {
             </p>
             <a
               href="mailto:contato@sompro.com.br?subject=Solicita%C3%A7%C3%A3o%20de%20or%C3%A7amento"
-              className="reference-button reference-button-ice group origin-top-left mt-6 inline-flex [transform:scale(1.1)] items-center gap-3 rounded-full border border-[#72e5ef]/55 bg-[#080c10]/25 py-1.5 pl-5 pr-1.5 text-[11px] font-medium tracking-[.04em] text-white shadow-[0_0_18px_rgba(49,201,231,.06)] transition-[transform,border-color,background-color,box-shadow] duration-[600ms] ease-[cubic-bezier(.22,1,.36,1)] hover:border-[#72e5ef] hover:bg-[#111a20]/70 hover:shadow-[0_0_22px_rgba(49,201,231,.13)] active:scale-[.98] sm:mt-7 sm:text-xs"
+              className="reference-button reference-button-ice group origin-top-left mt-6 inline-flex [transform:scale(1.1)] items-center gap-3 rounded-full border border-[#72e5ef]/55 bg-[#080c10]/70 py-1.5 pl-5 pr-1.5 text-[11px] font-medium tracking-[.04em] text-white shadow-[0_0_18px_rgba(49,201,231,.06)] transition-[transform,border-color,background-color,box-shadow] duration-[600ms] ease-[cubic-bezier(.22,1,.36,1)] hover:border-[#72e5ef] hover:bg-[#111a20]/70 hover:shadow-[0_0_22px_rgba(49,201,231,.13)] active:scale-[.98] sm:mt-7 sm:text-xs"
             >
               Solicitar orçamento
               <span className="flex h-8 w-8 scale-110 items-center justify-center rounded-full bg-white/[.07] text-[#a7f2fa] transition-transform duration-[600ms] ease-[cubic-bezier(.22,1,.36,1)] group-hover:translate-x-0.5">
@@ -65,8 +69,8 @@ export function DJHero() {
           </motion.div>
         </div>
 
-        <div className="pointer-events-none absolute right-5 top-[48%] hidden -translate-y-1/2 [writing-mode:vertical-rl] sm:block lg:right-10 scale-150">
-          <span className="mb-4 inline-block h-7 w-px bg-white/25" />
+        <div className="pointer-events-none absolute right-2 top-[46%] -translate-y-1/2 [writing-mode:vertical-rl] scale-[.78] sm:right-5 sm:top-[48%] lg:right-10 sm:scale-150">
+          <span className="mb-2 inline-block h-5 w-px bg-white/25 sm:mb-4 sm:h-7" />
           <span className="scale-[1.12] text-[8px] font-medium uppercase tracking-[.34em] text-white/45">
             Música que conecta pessoas
           </span>
